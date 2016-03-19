@@ -1,4 +1,6 @@
-package com.lightbend.sbtserversupport
+package com
+package lightbend
+package sbtserversupport
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent

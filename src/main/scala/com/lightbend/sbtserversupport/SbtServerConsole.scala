@@ -1,4 +1,6 @@
-package com.lightbend.sbtserversupport
+package com
+package lightbend
+package sbtserversupport
 
 import java.io.{ OutputStream, IOException, InputStreamReader, BufferedReader, PrintWriter }
 import java.net.Socket

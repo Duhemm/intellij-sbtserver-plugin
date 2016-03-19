@@ -1,4 +1,6 @@
-package com.lightbend.sbtserversupport
+package com
+package lightbend
+package sbtserversupport
 
 import java.awt.{ GridLayout, BorderLayout }
 import java.awt.event.{ ActionEvent, ActionListener }
