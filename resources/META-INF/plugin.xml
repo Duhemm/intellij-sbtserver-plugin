@@ -1,17 +1,14 @@
 <idea-plugin version="2">
   <id>com.your.company.unique.plugin.id</id>
-  <name>Plugin display name here</name>
+  <name>sbt plugin</name>
   <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <vendor email="support@lightbend.com" url="http://www.lightbend.com">Lightbend, Inc.</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+      Plugin to use sbt from IDEA.
     ]]></description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
     ]]>
   </change-notes>
 
@@ -30,6 +27,17 @@
 
   <actions>
     <!-- Add your actions here -->
+
+    <action id="BuildOnSbtServer" class="sbt.intellij.sbtsupport.BuildOnSbtServerAction" text="Build on sbt server" description="Build on sbt server">
+      <add-to-group group-id="BuildMenu" anchor="last"/>
+    </action>
+    <action id="CleanOnSbtServer" class="sbt.intellij.sbtsupport.CleanOnSbtServerAction"
+            text="Clean on sbt server" description="Clean on sbt server"/>
   </actions>
 
+  <project-components>
+    <component>
+      <implementation-class>sbt.intellij.sbtsupport.SbtServerConsole</implementation-class>
+    </component>
+  </project-components>
 </idea-plugin>
