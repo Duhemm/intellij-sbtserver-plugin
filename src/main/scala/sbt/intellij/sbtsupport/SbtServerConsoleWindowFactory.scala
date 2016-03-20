@@ -1,4 +1,4 @@
-package com.lightbend.sbtserversupport
+package sbt.intellij.sbtsupport
 
 import java.awt.{ GridLayout, BorderLayout }
 import java.awt.event.{ ActionEvent, ActionListener }
@@ -43,6 +43,12 @@ object SbtServerConsoleWindowFactory extends ToolWindowFactory {
       }
     })
     val connectButton = new JButton("Connect to server")
+    val connectActionListener: ActionListener = new ActionListener {
+      override def actionPerformed(e: ActionEvent): Unit = {
+        consoleComponent.connectToServer()
+      }
+    }
+    connectButton.addActionListener(connectActionListener)
 
     toolWindow.setStripeTitle(consoleComponent.CONSOLE_WINDOW_ID)
     toolWindow.setTitle(consoleComponent.CONSOLE_WINDOW_ID)
@@ -54,48 +60,49 @@ object SbtServerConsoleWindowFactory extends ToolWindowFactory {
     rootContainer.add(buttonsContainer, BorderLayout.NORTH)
     rootContainer.add(console.getComponent, BorderLayout.CENTER)
 
-    val connectionMonitor = new ConnectionMonitor(connectButton, consoleComponent)
-    connectionMonitor.start()
+    // val connectionMonitor = new ConnectionMonitor(connectButton, consoleComponent)
+    // connectionMonitor.start()
   }
 }
 
-private class ConnectionMonitor(connectButton: JButton, component: SbtServerConsole) extends Thread {
+//private class ConnectionMonitor(connectButton: JButton, component: SbtServerConsole) extends Thread {
+//
+//  private val connectedLabel = "Disconnect from server"
+//  private val disconnectedLabel = "Connect to server"
+//  private val connectActionListener: ActionListener = new ActionListener {
+//    override def actionPerformed(e: ActionEvent): Unit = {
+//      connectButton.setEnabled(false)
+//      connectButton.removeActionListener(connectActionListener)
+//      connectButton.addActionListener(disconnectActionListener)
+//      component.connectToServer()
+//    }
+//  }
+//
+//  private val disconnectActionListener: ActionListener = new ActionListener {
+//    override def actionPerformed(e: ActionEvent): Unit = {
+//      connectButton.setEnabled(true)
+//      connectButton.setText(disconnectedLabel)
+//      connectButton.removeActionListener(disconnectActionListener)
+//      connectButton.addActionListener(connectActionListener)
+//      component.closeCommunication()
+//    }
+//  }
+//
+//  override def run(): Unit = component.monitor.synchronized {
+//    while (true) {
+//      if (component.connected()) {
+//        connectButton.setText(connectedLabel)
+//        connectButton.removeActionListener(connectActionListener)
+//        connectButton.addActionListener(disconnectActionListener)
+//      } else {
+//        connectButton.setText(disconnectedLabel)
+//        connectButton.removeActionListener(disconnectActionListener)
+//        connectButton.addActionListener(connectActionListener)
+//      }
+//
+//      component.monitor.wait()
+//
+//    }
+//  }
+//}
 
-  private val connectedLabel = "Disconnect from server"
-  private val disconnectedLabel = "Connect to server"
-  private val connectActionListener: ActionListener = new ActionListener {
-    override def actionPerformed(e: ActionEvent): Unit = {
-      connectButton.setEnabled(false)
-      connectButton.removeActionListener(connectActionListener)
-      connectButton.addActionListener(disconnectActionListener)
-      component.connectToServer()
-    }
-  }
-
-  private val disconnectActionListener: ActionListener = new ActionListener {
-    override def actionPerformed(e: ActionEvent): Unit = {
-      connectButton.setEnabled(true)
-      connectButton.setText(disconnectedLabel)
-      connectButton.removeActionListener(disconnectActionListener)
-      connectButton.addActionListener(connectActionListener)
-      component.closeCommunication()
-    }
-  }
-
-  override def run(): Unit = component.monitor.synchronized {
-    while (true) {
-      if (component.connected()) {
-        connectButton.setText(connectedLabel)
-        connectButton.removeActionListener(connectActionListener)
-        connectButton.addActionListener(disconnectActionListener)
-      } else {
-        connectButton.setText(disconnectedLabel)
-        connectButton.removeActionListener(disconnectActionListener)
-        connectButton.addActionListener(connectActionListener)
-      }
-
-      component.monitor.wait()
-
-    }
-  }
-}

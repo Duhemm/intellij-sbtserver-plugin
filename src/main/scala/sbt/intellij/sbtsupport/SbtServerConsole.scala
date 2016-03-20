@@ -1,4 +1,4 @@
-package com.lightbend.sbtserversupport
+package sbt.intellij.sbtsupport
 
 import java.io.{ OutputStream, IOException, InputStreamReader, BufferedReader, PrintWriter }
 import java.net.Socket
@@ -8,7 +8,6 @@ import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.{ ToolWindowAnchor, ToolWindowManager }
-import com.lightbend.intellijson.Command
 
 private class LogCollector(reader: BufferedReader, console: ConsoleView, component: SbtServerConsole) extends Thread {
   private var continue: Boolean = true
@@ -33,7 +32,7 @@ private class LogCollector(reader: BufferedReader, console: ConsoleView, compone
 class SbtServerConsole(project: Project) extends ProjectComponent { self =>
 
   override val getComponentName: String = "com.lightbend.sbtserversupport.SbtServerConsole"
-  val monitor: Object = ""
+  val monitor = new AnyRef {}
 
   final val CONSOLE_WINDOW_ID = "sbt server console"
   private var connectionOK: Boolean = false
@@ -71,7 +70,7 @@ class SbtServerConsole(project: Project) extends ProjectComponent { self =>
     }
   }
 
-  def tellSbtTo(command: Command): Unit = {
+  def tellSbtTo(command: CommandExec): Unit = {
     toSbt.write((command.serialize + "\n").getBytes("UTF-8"))
     toSbt.flush()
   }
@@ -98,7 +97,7 @@ class SbtServerConsole(project: Project) extends ProjectComponent { self =>
         window.activate(null, true)
       }
 
-      connectToServer()
+      // connectToServer()
 
     }
 
@@ -108,14 +107,14 @@ class SbtServerConsole(project: Project) extends ProjectComponent { self =>
     closeCommunication()
   }
 
-  def connectToServer(): Unit = {
+  def connectToServer(): Unit = monitor.synchronized {
     if (!connectionOK)
       new CommunicationEstablisher().start()
 
     monitor.notifyAll()
   }
 
-  def closeCommunication(): Unit = {
+  def closeCommunication(): Unit = monitor.synchronized {
     if (connectionOK) {
       connectionOK = false
       logCollector.stopCollecting()
